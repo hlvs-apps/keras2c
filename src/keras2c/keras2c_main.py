@@ -47,11 +47,11 @@ def model2c(model, function_name, malloc=False, verbose=True, output_path='.'):
     """
 
     model_inputs, model_outputs = get_model_io_names(model)
-    includes = '#include <math.h> \n '
-    includes += '#include <string.h> \n'
-    includes += '#include "include/k2c_include.h" \n'
-    includes += '#include "include/k2c_tensor_include.h" \n'
-    includes += f'#include "{function_name}.h" \n'
+    includes = '#include <math.h>\n'
+    includes += '#include <string.h>\n'
+    includes += '#include "include/k2c_include.h"\n'
+    includes += '#include "include/k2c_tensor_include.h"\n'
+    includes += f'#include "{function_name}.h"\n'
     includes += '\n \n'
 
     if verbose:
