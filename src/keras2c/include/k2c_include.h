@@ -6,7 +6,8 @@ Licensed under MIT License
 https://github.com/f0uriest/keras2c
  */
 
-#pragma once
+#ifndef K2C_INCLUDE_H
+#define K2C_INCLUDE_H
 
 #include <stdlib.h>
 #include "k2c_tensor_include.h"
@@ -97,7 +98,7 @@ void k2c_subtract(k2c_tensor* output, const size_t num_tensors,
 void k2c_multiply(k2c_tensor* output, const size_t num_tensors,...);
 void k2c_average(k2c_tensor* output, const size_t num_tensors,...);
 void k2c_max(k2c_tensor* output, const size_t num_tensors,...);
-void k2c_min(k2c_tensor* output, const size_t num_tensors,...);
+void k2c_min(k2c_tensor* output, const size_t num_tentsors,...);
 void k2c_concatenate(k2c_tensor* output, const size_t axis, const size_t num_tensors,...);
 
 // Normalization layers
@@ -145,3 +146,4 @@ void k2c_gru(k2c_tensor* output, const k2c_tensor* input, float * state,
              k2c_activationType *recurrent_activation,
              k2c_activationType *output_activation);
 
+#endif /* K2C_INCLUDE_H */

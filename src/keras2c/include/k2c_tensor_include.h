@@ -6,7 +6,8 @@ Licensed under MIT License
 https://github.com/f0uriest/keras2c
  */
 
-#pragma once
+#ifndef K2C_TENSOR_INCLUDE_H
+#define K2C_TENSOR_INCLUDE_H
 #include <stdlib.h>
 
 
@@ -36,3 +37,5 @@ struct k2c_tensor
 };
 
 typedef struct k2c_tensor k2c_tensor;
+
+#endif /* K2C_TENSOR_INCLUDE_H */

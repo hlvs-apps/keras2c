@@ -91,13 +91,15 @@ def model2c(model, function_name, malloc=False, verbose=True, output_path='.'):
             source.write(reset_fun)
 
     with open(h_file, 'w') as header:
-        header.write('#pragma once \n')
+        header.write(f'#ifndef {function_name.upper()}_H\n')
+        header.write(f'#define {function_name.upper()}_H\n\n')
         header.write('#include "include/k2c_tensor_include.h" \n')
         header.write(function_signature + '; \n')
         header.write(init_sig + '; \n')
         header.write(term_sig + '; \n')
         if stateful:
             header.write(reset_sig + '; \n')
+        header.write(f'\n#endif /* {function_name.upper()}_H */\n')
     try:
         subprocess.run(['astyle', '-n', h_file])
         subprocess.run(['astyle', '-n', c_file])
