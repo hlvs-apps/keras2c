@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
 k2c_recurrent_layers.c
 This file is part of keras2c
@@ -400,3 +403,7 @@ void k2c_gru(k2c_tensor* output, const k2c_tensor* input, float * state,
         }
     }
 }
+
+#ifdef __cplusplus
+}
+#endif

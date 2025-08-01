@@ -215,8 +215,8 @@ def make_test_suite(
 
     s = f"{function_name}_terminate(" + ",".join(malloc_vars) + "); \n"
     s += f"if (maxerror > {tol}) {{ \n"
-    s += "return 1;}} \n"
-    s += "return 0;\n}} \n\n"
+    s += "return 1;} \n"
+    s += "return 0;\n} \n\n"
     file.write(s)
     s = """float maxabs(k2c_tensor *tensor1, k2c_tensor *tensor2){ \n
     float x = 0; \n

@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
 k2c_activations.c
 This file is part of keras2c
@@ -301,3 +304,7 @@ void k2c_ReLU(float * x, const size_t size, const float max_value,
         }
     }
 }
+
+#ifdef __cplusplus
+}
+#endif

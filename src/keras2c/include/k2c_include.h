@@ -9,6 +9,10 @@ https://github.com/f0uriest/keras2c
 #ifndef K2C_INCLUDE_H
 #define K2C_INCLUDE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include "k2c_tensor_include.h"
 
@@ -148,5 +152,9 @@ void k2c_gru(k2c_tensor* output, const k2c_tensor* input, float * state,
              const int go_backwards, const int return_sequences,
              k2c_activationType *recurrent_activation,
              k2c_activationType *output_activation);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* K2C_INCLUDE_H */

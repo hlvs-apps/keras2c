@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
 k2c_helper_functions.c
 This file is part of keras2c
@@ -348,3 +351,7 @@ float* k2c_read_array(const char* filename, const size_t array_size) {
     fclose(finp);
     return ptr;
 }
+
+#ifdef __cplusplus
+}
+#endif

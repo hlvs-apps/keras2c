@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
 k2c_normalization_layers.c
 This file is part of keras2c
@@ -42,3 +45,7 @@ void k2c_batch_norm(k2c_tensor* outputs, const k2c_tensor* inputs, const k2c_ten
                             beta->array[idx];
     }
 }
+
+#ifdef __cplusplus
+}
+#endif

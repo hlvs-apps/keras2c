@@ -1,3 +1,6 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
 k2c_merge_layers.c
 This file is part of keras2c
@@ -194,3 +197,7 @@ void k2c_concatenate(k2c_tensor* output, const size_t axis, const size_t num_ten
     }
     va_end (args);
 }
+
+#ifdef __cplusplus
+}
+#endif

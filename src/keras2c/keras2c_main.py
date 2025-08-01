@@ -79,6 +79,9 @@ def model2c(model, function_name, malloc=False, verbose=True, output_path='.'):
     h_file = os.path.join(output_path, function_name + '.h')
 
     with open(c_file, 'w') as source:
+        source.write('#ifdef __cplusplus\n')
+        source.write('extern "C" {\n')
+        source.write('#endif\n\n')
         source.write(includes)
         source.write(static_vars + '\n\n')
         source.write(function_signature)
@@ -88,18 +91,27 @@ def model2c(model, function_name, malloc=False, verbose=True, output_path='.'):
         source.write('\n } \n\n')
         source.write(init_fun)
         source.write(term_fun)
+        source.write('\n#ifdef __cplusplus\n')
+        source.write('}\n')
+        source.write('#endif\n\n')
         if stateful:
             source.write(reset_fun)
 
     with open(h_file, 'w') as header:
         header.write(f'#ifndef {function_name.upper()}_H\n')
         header.write(f'#define {function_name.upper()}_H\n\n')
+        header.write('#ifdef __cplusplus\n')
+        header.write('extern "C" {\n')
+        header.write('#endif\n\n')
         header.write('#include "include/k2c_tensor_include.h" \n')
         header.write(function_signature + '; \n')
         header.write(init_sig + '; \n')
         header.write(term_sig + '; \n')
         if stateful:
             header.write(reset_sig + '; \n')
+        header.write('\n#ifdef __cplusplus\n')
+        header.write('}\n')
+        header.write('#endif\n')
         header.write(f'\n#endif /* {function_name.upper()}_H */\n')
     try:
         subprocess.run(['astyle', '-n', h_file])

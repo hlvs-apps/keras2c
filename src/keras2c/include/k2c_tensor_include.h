@@ -8,6 +8,11 @@ https://github.com/f0uriest/keras2c
 
 #ifndef K2C_TENSOR_INCLUDE_H
 #define K2C_TENSOR_INCLUDE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 
 
@@ -37,5 +42,9 @@ struct k2c_tensor
 };
 
 typedef struct k2c_tensor k2c_tensor;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* K2C_TENSOR_INCLUDE_H */
