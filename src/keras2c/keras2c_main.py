@@ -51,6 +51,7 @@ def model2c(model, function_name, malloc=False, verbose=True, output_path='.'):
     includes += '#include <string.h> \n'
     includes += '#include "include/k2c_include.h" \n'
     includes += '#include "include/k2c_tensor_include.h" \n'
+    includes += f'#include "{function_name}.h" \n'
     includes += '\n \n'
 
     if verbose:
