@@ -1,4 +1,5 @@
 LICENSE
+MANIFEST.in
 README.rst
 pyproject.toml
 setup.py
@@ -17,6 +18,18 @@ src/keras2c.egg-info/SOURCES.txt
 src/keras2c.egg-info/dependency_links.txt
 src/keras2c.egg-info/requires.txt
 src/keras2c.egg-info/top_level.txt
+src/keras2c/include/k2c_activations.c
+src/keras2c/include/k2c_convolution_layers.c
+src/keras2c/include/k2c_core_layers.c
+src/keras2c/include/k2c_embedding_layers.c
+src/keras2c/include/k2c_helper_functions.c
+src/keras2c/include/k2c_include.h
+src/keras2c/include/k2c_merge_layers.c
+src/keras2c/include/k2c_normalization_layers.c
+src/keras2c/include/k2c_pooling_layers.c
+src/keras2c/include/k2c_recurrent_layers.c
+src/keras2c/include/k2c_tensor_include.h
+src/keras2c/include/makefile
 tests/test_advanced_activation_layers.py
 tests/test_checks.py
 tests/test_convolution_layers.py

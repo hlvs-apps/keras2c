@@ -80,3 +80,25 @@ class TestAdvancedActivation(unittest.TestCase):
         keras2c_main.k2c(model, name)
         rcode = build_and_run(name)
         self.assertEqual(rcode, 0)
+
+    def test_Swish(self):
+        """Test conversion of Swish."""
+        inshp = (4, 5, 6, 3)
+        a = keras.Input(shape=inshp)
+        b = keras.layers.Activation('swish')(a)
+        model = keras.Model(inputs=a, outputs=b)
+        name = 'test___Swish' + str(int(time.time()))
+        keras2c_main.k2c(model, name)
+        rcode = build_and_run(name)
+        self.assertEqual(rcode, 0)
+
+    def test_SILU(self):
+        """Test conversion of SILU."""
+        inshp = (4, 5, 6, 3)
+        a = keras.Input(shape=inshp)
+        b = keras.layers.Activation('silu')(a)
+        model = keras.Model(inputs=a, outputs=b)
+        name = 'test___SILU' + str(int(time.time()))
+        keras2c_main.k2c(model, name)
+        rcode = build_and_run(name)
+        self.assertEqual(rcode, 0)

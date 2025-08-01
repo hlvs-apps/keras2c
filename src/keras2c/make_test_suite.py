@@ -12,6 +12,7 @@ import numpy as np
 from keras2c.io_parsing import get_model_io_names
 from keras2c.weights2c import Weights2C
 import subprocess
+import os
 
 __author__ = "Rory Conlin"
 __copyright__ = "Copyright 2020, Rory Conlin"
@@ -28,6 +29,7 @@ def make_test_suite(
     stateful=False,
     verbose=True,
     tol=1e-5,
+    output_path='.',
 ):
     """Generates code to test the generated C function.
 
@@ -46,6 +48,7 @@ def make_test_suite(
         verbose (bool): whether to print output
         tol (float): tolerance for passing tests. Tests pass if the maximum error over
             all elements between the true output and generated code output is less than tol
+        output_path (str): directory to save the generated C files
 
     Returns:
         None
@@ -67,11 +70,12 @@ def make_test_suite(
             temp_input_shape = temp_input_shape[1:]  # Exclude batch dimension
         input_shape.append(temp_input_shape)
 
-    file = open(function_name + "_test_suite.c", "w")
+    test_suite_filename = os.path.join(output_path, function_name + "_test_suite.c")
+    file = open(test_suite_filename, "w")
     s = '#include <stdio.h> \n'
     s += '#include <math.h> \n'
     s += '#include <time.h> \n'
-    s += '#include "./include/k2c_include.h" \n'
+    s += '#include "include/k2c_include.h" \n'
     s += f'#include "{function_name}.h" \n\n'
     s += "float maxabs(k2c_tensor *tensor1, k2c_tensor *tensor2);\n"
     s += "struct timeval GetTimeStamp(); \n \n"
@@ -211,21 +215,23 @@ def make_test_suite(
 
     s = f"{function_name}_terminate(" + ",".join(malloc_vars) + "); \n"
     s += f"if (maxerror > {tol}) {{ \n"
-    s += "return 1;} \n"
-    s += "return 0;\n} \n\n"
+    s += "return 1;}} \n"
+    s += "return 0;\n}} \n\n"
     file.write(s)
     s = """float maxabs(k2c_tensor *tensor1, k2c_tensor *tensor2){ \n
     float x = 0; \n
     float y = 0; \n
     for(size_t i=0; i<tensor1->numel; i++){\n
-    y = fabsf(tensor1->array[i]-tensor2->array[i]);
+y = fabsf(tensor1->array[i]-tensor2->array[i]);
+
     if (y>x) {x=y;}}
+
     return x;}\n\n"""
     file.write(s)
     file.close()
     try:
-        subprocess.run(["astyle", "-n", function_name + "_test_suite.c"])
+        subprocess.run(["astyle", "-n", test_suite_filename])
     except FileNotFoundError:
         print(
-            f"astyle not found, {function_name}_test_suite.c will not be auto-formatted"
+            f"astyle not found, {test_suite_filename} will not be auto-formatted"
         )

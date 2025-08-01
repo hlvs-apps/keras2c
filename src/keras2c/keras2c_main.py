@@ -16,6 +16,9 @@ from keras2c.make_test_suite import make_test_suite
 from keras2c.types import Keras2CConfig
 import subprocess
 from .backend import keras
+import os
+import shutil
+import pkg_resources
 
 
 __author__ = "Rory Conlin"
@@ -25,7 +28,7 @@ __maintainer__ = "Rory Conlin, https://github.com/f0uriest/keras2c"
 __email__ = "wconlin@princeton.edu"
 
 
-def model2c(model, function_name, malloc=False, verbose=True):
+def model2c(model, function_name, malloc=False, verbose=True, output_path='.'):
     """Generates C code for model
 
     Writes main function definition to "function_name.c" and a public header
@@ -36,6 +39,7 @@ def model2c(model, function_name, malloc=False, verbose=True):
         function_name (str): name of C function
         malloc (bool): whether to allocate variables on the stack or heap
         verbose (bool): whether to print info to stdout
+        output_path (str): directory to save the generated C files
 
     Returns:
         malloc_vars (list): names of variables loaded at runtime and stored on the heap
@@ -45,8 +49,8 @@ def model2c(model, function_name, malloc=False, verbose=True):
     model_inputs, model_outputs = get_model_io_names(model)
     includes = '#include <math.h> \n '
     includes += '#include <string.h> \n'
-    includes += '#include "./include/k2c_include.h" \n'
-    includes += '#include "./include/k2c_tensor_include.h" \n'
+    includes += '#include "include/k2c_include.h" \n'
+    includes += '#include "include/k2c_tensor_include.h" \n'
     includes += '\n \n'
 
     if verbose:
@@ -70,7 +74,10 @@ def model2c(model, function_name, malloc=False, verbose=True):
     term_sig, term_fun = gen_function_terminate(function_name, malloc_vars)
     reset_sig, reset_fun = gen_function_reset(function_name)
 
-    with open(function_name + '.c', 'w') as source:
+    c_file = os.path.join(output_path, function_name + '.c')
+    h_file = os.path.join(output_path, function_name + '.h')
+
+    with open(c_file, 'w') as source:
         source.write(includes)
         source.write(static_vars + '\n\n')
         source.write(function_signature)
@@ -83,19 +90,19 @@ def model2c(model, function_name, malloc=False, verbose=True):
         if stateful:
             source.write(reset_fun)
 
-    with open(function_name + '.h', 'w') as header:
+    with open(h_file, 'w') as header:
         header.write('#pragma once \n')
-        header.write('#include "./include/k2c_tensor_include.h" \n')
+        header.write('#include "include/k2c_tensor_include.h" \n')
         header.write(function_signature + '; \n')
         header.write(init_sig + '; \n')
         header.write(term_sig + '; \n')
         if stateful:
             header.write(reset_sig + '; \n')
     try:
-        subprocess.run(['astyle', '-n', function_name + '.h'])
-        subprocess.run(['astyle', '-n', function_name + '.c'])
+        subprocess.run(['astyle', '-n', h_file])
+        subprocess.run(['astyle', '-n', c_file])
     except FileNotFoundError:
-        print("astyle not found, {} and {} will not be auto-formatted".format(function_name + ".h", function_name + ".c"))
+        print("astyle not found, {} and {} will not be auto-formatted".format(h_file, c_file))
 
     return malloc_vars.keys(), stateful
 
@@ -187,7 +194,7 @@ def gen_function_terminate(function_name, malloc_vars):
     return term_sig, term_fun
 
 
-def k2c(model, function_name, malloc=False, num_tests=10, verbose=True):
+def k2c(model, function_name, malloc=False, num_tests=10, verbose=True, output_path='.'):
     """Converts Keras model to C code and generates test suite
 
     Args:
@@ -196,6 +203,7 @@ def k2c(model, function_name, malloc=False, num_tests=10, verbose=True):
         malloc (bool): whether to allocate variables on the stack or heap
         num_tests (int): how many tests to generate in the test suite
         verbose (bool): whether to print progress
+        output_path (str): directory to save the generated C files
 
     Raises:
         ValueError: if model is not an instance of keras.Model
@@ -218,6 +226,15 @@ def k2c(model, function_name, malloc=False, num_tests=10, verbose=True):
     num_tests = cfg.num_tests
     verbose = cfg.verbose
 
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
+    include_dir = pkg_resources.resource_filename('keras2c', 'include')
+    target_include_dir = os.path.join(output_path, 'include')
+    if os.path.exists(target_include_dir):
+        shutil.rmtree(target_include_dir)
+    shutil.copytree(include_dir, target_include_dir)
+
     function_name = str(function_name)
     if isinstance(model, str):
         model = keras.load_model(model)
@@ -233,15 +250,15 @@ def k2c(model, function_name, malloc=False, num_tests=10, verbose=True):
         print('All checks passed')
 
     malloc_vars, stateful = model2c(
-        model, function_name, malloc, verbose)
+        model, function_name, malloc, verbose, output_path)
 
     s = 'Done \n'
-    s += "C code is in '" + function_name + \
-        ".c' with header file '" + function_name + ".h' \n"
+    s += "C code is in '" + os.path.join(output_path, function_name + ".c") + \
+        "' with header file '" + os.path.join(output_path, function_name + ".h") + "' \n"
     if num_tests > 0:
         make_test_suite(model, function_name, malloc_vars,
-                        num_tests, stateful, verbose)
-        s += "Tests are in '" + function_name + "_test_suite.c' \n"
+                        num_tests, stateful, verbose, output_path=output_path)
+        s += "Tests are in '" + os.path.join(output_path, function_name + "_test_suite.c") + "' \n"
     if malloc:
         s += "Weight arrays are in .csv files of the form 'model_name_layer_name_array_type.csv' \n"
         s += "They should be placed in the directory from which the main program is run."

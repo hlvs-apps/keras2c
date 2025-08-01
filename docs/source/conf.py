@@ -67,7 +67,7 @@ napoleon_use_param = True
 napoleon_use_rtype = False
 
 # Hawkmoth settings
-cautodoc_root = os.path.abspath('../../include')
+cautodoc_root = os.path.abspath('../../src/keras2c/include')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

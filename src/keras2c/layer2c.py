@@ -487,6 +487,12 @@ class Layers2C():
     def _write_layer_ReLU(self, layer, inputs, outputs, i):
         self._write_layer_AdvancedActivation(layer, inputs, outputs, i)
 
+    def _write_layer_Swish(self, layer, inputs, outputs, i):
+        self._write_layer_AdvancedActivation(layer, inputs, outputs, i)
+
+    def _write_layer_SILU(self, layer, inputs, outputs, i):
+        self._write_layer_AdvancedActivation(layer, inputs, outputs, i)
+
     def _write_layer_AdvancedActivation(self, layer, inputs, outputs, i):
         ctx = self._format_io_names(layer, inputs, outputs, True)
         nm = ctx.name
@@ -515,6 +521,10 @@ class Layers2C():
             self.layers += 'k2c_ReLU(' + inp + 'array,' + inp + \
                            'numel,' + nm + '_max_value, \n\t' + \
                            nm + '_negative_slope,' + nm + '_threshold); \n'
+        if layer_type(layer) == 'Swish':
+            self.layers += 'k2c_swish(' + inp + 'array,' + inp + 'numel); \n'
+        if layer_type(layer) == 'SILU':
+            self.layers += 'k2c_silu(' + inp + 'array,' + inp + 'numel); \n'
         self._write_dummy_layer(layer, inputs, outputs, i,
                                 is_model_input, is_model_output)
 

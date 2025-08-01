@@ -46,6 +46,14 @@ def parse_args(args):
         help="""Number of tests to generate. Default is 10""",
         metavar=''
     )
+    parser.add_argument(
+        "-o",
+        "--output_path",
+        type=str,
+        default=".",
+        help="""Directory to save the generated C files. Default is current directory""",
+        metavar=''
+    )
 
     return parser.parse_args(args)
 
@@ -59,7 +67,7 @@ def main(args=None):
     malloc = args.malloc
     num_tests = args.num_tests if args.num_tests else 10
 
-    k2c(args.model_path, args.function_name, malloc, num_tests)
+    k2c(args.model_path, args.function_name, malloc, num_tests, args.output_path)
 
 
 if __name__ == '__main__':

@@ -262,6 +262,22 @@ void k2c_ThresholdedReLU(float * x, const size_t size, const float theta) {
 }
 
 /**
+ * Swish activation function.
+ *   y = x*sigmoid(x)
+ *
+ * :param x: array of input values. Gets overwritten by output.
+ * :param size: length of input array.
+ */
+void k2c_swish_func(float * x, const size_t size) {
+
+    for (size_t i=0; i < size; ++i) {
+        x[i] = x[i]/(1+expf(-x[i]));
+    }
+}
+k2c_activationType * k2c_swish = k2c_swish_func;
+k2c_activationType * k2c_silu = k2c_swish_func;
+
+/**
  * Rectified Linear Unit activation function.
  *   y = {max_value       if          x >= max_value}
  *       {x               if theta <= x <  max_value}
