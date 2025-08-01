@@ -1,6 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
 /**
 k2c_core_layers.c
 This file is part of keras2c
@@ -8,6 +5,10 @@ Copyright 2020 Rory Conlin
 Licensed under MIT License
 https://github.com/f0uriest/keras2c
  */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <math.h>
 #include <stdio.h>
